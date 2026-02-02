@@ -1,26 +1,40 @@
 # emarket_API
 
-A Django-based e-commerce API project for managing products, users, and orders.
+مشروع **متجر إلكتروني (E-Commerce API)** باستخدام Django و Django REST Framework.  
+يوفر API كامل لإدارة المنتجات، المستخدمين، والطلبات، مع إمكانية التكامل مع أي واجهة أمامية أو تطبيق موبايل.
 
-## Table of Contents
-- [Overview](#overview)
-- [Features](#features)
-- [Project Structure](#project-structure)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Technologies](#technologies)
-- [Contributing](#contributing)
-- [License](#license)
+---
 
-## Overview
-`emarket_API` is a backend project built with Django REST Framework to provide an API for an e-commerce platform. It allows handling products, users, orders, and integrates with databases and Docker for deployment.
+## 1️⃣ التقنيات المستخدمة
+- **Python 3.x**: لغة البرمجة الأساسية للمشروع.  
+- **Django 4.x**: لإنشاء الباك اند وإدارة قواعد البيانات.  
+- **Django REST Framework (DRF)**: لإنشاء واجهة API احترافية.  
+- **SQLite / أي قاعدة بيانات أخرى**: لتخزين البيانات.  
+- **Docker & Docker Compose**: لتشغيل المشروع بسهولة على أي جهاز.  
 
-## Features
-- User authentication (login, registration)
-- Product management (CRUD operations)
-- Order management
-- API endpoints for mobile or frontend integration
-- Docker support for easy deployment
+---
 
-## Project Structure
+## 2️⃣ إدارة المنتجات (Products)
+- إضافة منتجات جديدة (Create) مع اسم، وصف، سعر، وصورة.  
+- عرض جميع المنتجات (Read) أو منتج محدد.  
+- تعديل بيانات المنتجات (Update).  
+- حذف المنتجات (Delete).  
+- API endpoints جاهزة للاستخدام مع أي فرونت اند أو تطبيق موبايل.  
 
+---
+
+## 3️⃣ إدارة المستخدمين (Users)
+- تسجيل مستخدمين جدد (Sign Up).  
+- تسجيل الدخول (Login) والتحقق من الهوية.  
+- عرض بيانات المستخدمين وتحديثها حسب الصلاحيات.  
+- إدارة صلاحيات المستخدمين (Admin / Customer).  
+
+---
+
+## 4️⃣ إدارة الطلبات (Orders)
+- لكل مستخدم يمكن إنشاء طلب جديد (Create Order).  
+- عرض الطلبات السابقة الخاصة بالمستخدم (Order History).  
+- تحديث حالة الطلبات (Processing, Completed, Cancelled).  
+- التكامل مع المنتجات: كل طلب يحتوي على المنتجات المطلوبة وكميتها.  
+
+---
