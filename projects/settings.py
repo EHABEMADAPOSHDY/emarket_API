@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-k)(%(kg0a605z9igji2%*s29gcq#*4gk4!vx%i2#f63zd!9n^&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['emarketapi-production.up.railway.app',]
 
 
 # Application definition
