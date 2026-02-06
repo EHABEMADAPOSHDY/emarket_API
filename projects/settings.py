@@ -33,7 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'django_filters',
     'drf_spectacular',
-    'silk',
+    # 'silk',
     'api',
     'rest_framework_simplejwt',
     'rest_framework', 
