@@ -1,129 +1,104 @@
 # eMarket API
 
-**eMarket API** is a Django REST Framework project for managing an online marketplace. It provides endpoints for user authentication, profile management, product CRUD, reviews, and order processing.
+eMarket API is a Django REST Framework project for managing an online marketplace.
+It provides APIs for authentication, users, products, orders, and reviews.
 
----
+==================================================
 
-## 🗂 Project Structure
+PROJECT STRUCTURE
 
-- `account/` – User registration, login, profile, password reset  
-- `product/` – Product listing, CRUD, review management  
-- `order/` – Order creation, retrieval, processing, deletion  
-- `emarket/` – Project configuration (settings, urls, wsgi, asgi)  
-- `utils/` – Utility modules like custom error handling  
+account/    -> user registration, login, profile, password reset  
+product/    -> product CRUD, listing, reviews  
+order/      -> order creation, processing, deletion  
+emarket/    -> project configuration (settings, urls)  
+utils/      -> utilities and custom error handlers  
 
----
+==================================================
 
-## 🔑 User APIs
+AUTH & USER APIS
 
-### Register a User
-- **URL:** `/api/register/`  
-- **Method:** `POST`  
-- **Body:**
-```json
+REGISTER USER
+URL: /api/register/
+METHOD: POST
+
+REQUEST BODY:
 {
   "first_name": "John",
   "last_name": "Doe",
   "email": "john@example.com",
   "password": "password123"
 }
-Description: Registers a new user. Checks if email exists. Password is hashed using Django’s make_password.
 
-Responses:
+RESPONSES:
+201 -> account created
+400 -> email already exists
 
-201 Created – Account registered successfully
+--------------------------------------------------
 
-400 Bad Request – Email already exists
-
-Get Current User
+GET CURRENT USER
 URL: /api/userinfo/
+METHOD: GET
+PERMISSION: Authenticated
 
-Method: GET
-
-Permissions: Authenticated users only
-
-Description: Returns the current logged-in user’s details.
-
-Response Example:
-
-json
-Copy code
+RESPONSE:
 {
   "first_name": "John",
   "last_name": "Doe",
   "email": "john@example.com",
   "username": "john@example.com"
 }
-Update User Profile
+
+--------------------------------------------------
+
+UPDATE USER PROFILE
 URL: /api/userinfo/update/
+METHOD: PUT
+PERMISSION: Authenticated
 
-Method: PUT
-
-Permissions: Authenticated users
-
-Body Example:
-
-json
-Copy code
+REQUEST BODY:
 {
   "first_name": "John",
   "last_name": "Doe",
   "email": "john@example.com",
   "password": "newpassword123"
 }
-Description: Updates user information. Password will be updated only if a new value is provided.
 
-Response: Returns updated user data.
+--------------------------------------------------
 
-Forgot Password
+FORGOT PASSWORD
 URL: /api/forgot_password/
+METHOD: POST
 
-Method: POST
-
-Body Example:
-
-json
-Copy code
+REQUEST BODY:
 {
   "email": "john@example.com"
 }
-Description: Sends a password reset link with a token to the user’s email. Token expires in 30 minutes.
 
-Response: Confirmation message about sending email.
+--------------------------------------------------
 
-Reset Password
+RESET PASSWORD
 URL: /api/reset_password/<token>
+METHOD: POST
 
-Method: POST
-
-Body Example:
-
-json
-Copy code
+REQUEST BODY:
 {
   "password": "newpassword123",
   "confirmPassword": "newpassword123"
 }
-Description: Resets the password using a valid token. Checks for expiration and password match.
 
-Response: Success or error message.
+==================================================
 
-🛒 Order APIs
-Create New Order
+ORDER APIS
+
+CREATE ORDER
 URL: /api/order/new
+METHOD: POST
+PERMISSION: Authenticated
 
-Method: POST
-
-Permissions: Authenticated users
-
-Body Example:
-
-json
-Copy code
+REQUEST BODY:
 {
   "order_Items": [
-    {"product": 1, "quantity": 2, "price": 50},
-    {"product": 2, "quantity": 1, "price": 30}
+    { "product": 1, "quantity": 2, "price": 50 }
   ],
   "city": "Cairo",
   "zip_code": "12345",
@@ -131,119 +106,96 @@ Copy code
   "phone_no": "01000000000",
   "country": "Egypt"
 }
-Description: Creates a new order, calculates total amount, reduces product stock, and saves order items.
 
-Response: Returns order data.
+--------------------------------------------------
 
-Get All Orders
+GET ALL ORDERS
 URL: /api/orders/
+METHOD: GET
+PERMISSION: Authenticated
 
-Method: GET
+--------------------------------------------------
 
-Permissions: Authenticated users
+GET SINGLE ORDER
+URL: /api/order/<id>/
+METHOD: GET
+PERMISSION: Authenticated
 
-Description: Returns all orders for admin or user.
+--------------------------------------------------
 
-Response: List of orders.
+PROCESS ORDER
+URL: /api/order/<id>/process/
+METHOD: PUT
+PERMISSION: Admin
 
-Get Single Order
-URL: /api/order/<pk>/
+--------------------------------------------------
 
-Method: GET
+DELETE ORDER
+URL: /api/order/<id>/delete/
+METHOD: DELETE
+PERMISSION: Admin
 
-Permissions: Authenticated users
+==================================================
 
-Description: Fetch a single order by ID.
+PRODUCT APIS
 
-Process Order
-URL: /api/order/<pk>/process/
-
-Method: PUT
-
-Permissions: Admin users only
-
-Description: Updates order status (e.g., pending, shipped, delivered).
-
-Delete Order
-URL: /api/order/<pk>/delete/
-
-Method: DELETE
-
-Permissions: Admin users only
-
-Description: Deletes a specific order.
-
-🛍 Product APIs
-Get All Products
+GET ALL PRODUCTS
 URL: /api/products/
+METHOD: GET
 
-Method: GET
+--------------------------------------------------
 
-Description: Returns all products with pagination and optional filters.
+GET PRODUCT BY ID
+URL: /api/products/<id>/
+METHOD: GET
 
-Get Product by ID
-URL: /api/products/<pk>/
+--------------------------------------------------
 
-Method: GET
-
-Description: Returns a single product by ID.
-
-Create New Product
+CREATE PRODUCT
 URL: /api/products/new
+METHOD: POST
+PERMISSION: Admin / Owner
 
-Method: POST
+--------------------------------------------------
 
-Permissions: Authenticated users
+UPDATE PRODUCT
+URL: /api/products/update/<id>/
+METHOD: PUT
+PERMISSION: Admin / Owner
 
-Description: Adds a new product. Admin or product owner only.
+--------------------------------------------------
 
-Update Product
-URL: /api/products/update/<pk>/
+DELETE PRODUCT
+URL: /api/products/delete/<id>/
+METHOD: DELETE
+PERMISSION: Admin / Owner
 
-Method: PUT
+--------------------------------------------------
 
-Permissions: Authenticated & product owner
+CREATE REVIEW
+URL: /api/<product_id>/review/
+METHOD: POST
+PERMISSION: Authenticated
 
-Description: Updates product details. Admin or owner only.
+--------------------------------------------------
 
-Delete Product
-URL: /api/products/delete/<pk>/
+DELETE REVIEW
+URL: /api/<product_id>/review/delete
+METHOD: DELETE
+PERMISSION: Admin
 
-Method: DELETE
+==================================================
 
-Permissions: Authenticated & product owner
+PERMISSIONS
 
-Description: Deletes a product. Admin or owner only.
+IsAuthenticated  
+IsAdminUser  
 
-Create Review
-URL: /api/<pk>/review/
+==================================================
 
-Method: POST
+NOTES
 
-Permissions: Authenticated users
-
-Description: Creates or updates a review for a product. Ratings must be 1–5.
-
-Delete Review
-URL: /api/<pk>/review/delete
-
-Method: DELETE
-
-Permissions: Admin users only
-
-Description: Deletes the review for the authenticated user.
-
-🔒 Permissions
-IsAuthenticated – Only logged-in users can access
-
-IsAdminUser – Only admins can perform certain actions (like deleting or processing orders)
-
-📦 Notes
-Passwords are hashed using make_password.
-
-Password reset uses a token system with 30-minute expiration.
-
-Product ratings are automatically calculated based on reviews.
-
-Pagination for products is set to 12 items per page.
-
+- passwords are hashed using make_password
+- password reset uses token with 30 minutes expiration
+- product rating calculated automatically from reviews
+- pagination set to 12 products per page
