@@ -1,101 +1,121 @@
-# eMarket API
+# 🛒 eMarket API
 
-eMarket API is a Django REST Framework project for managing an online marketplace.
-It provides APIs for authentication, users, products, orders, and reviews.
+مشروع **eMarket API** هو Back-End مبني باستخدام **Django REST Framework**  
+بيوفر نظام كامل لإدارة متجر إلكتروني (مستخدمين – منتجات – طلبات – تقييمات)
 
-==================================================
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📁 هيكل المشروع
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-PROJECT STRUCTURE
+account/     ➜ تسجيل المستخدمين – تعديل الحساب – استرجاع كلمة المرور  
+product/     ➜ إدارة المنتجات – التقييمات – الفلاتر – الباجينيشن  
+order/       ➜ إنشاء الطلبات – معالجتها – حذفها  
+emarket/     ➜ إعدادات المشروع الرئيسية  
+utils/       ➜ أدوات مساعدة  
 
-account/    -> user registration, login, profile, password reset  
-product/    -> product CRUD, listing, reviews  
-order/      -> order creation, processing, deletion  
-emarket/    -> project configuration (settings, urls)  
-utils/      -> utilities and custom error handlers  
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+👤 APIs المستخدمين (AUTH & USER)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-==================================================
+🔹 تسجيل مستخدم جديد
+────────────────────
+URL: /api/register/  
+METHOD: POST  
 
-AUTH & USER APIS
-
-REGISTER USER
-URL: /api/register/
-METHOD: POST
-
-REQUEST BODY:
+BODY:
 {
-  "first_name": "John",
-  "last_name": "Doe",
-  "email": "john@example.com",
-  "password": "password123"
+  "first_name": "Ahmed",
+  "last_name": "Ali",
+  "email": "ahmed@email.com",
+  "password": "123456"
 }
+
+📝 الوصف:
+- إنشاء حساب جديد
+- التأكد إن الإيميل مش متكرر
+- تشفير كلمة المرور
 
 RESPONSES:
-201 -> account created
-400 -> email already exists
+201 ➜ تم إنشاء الحساب  
+400 ➜ الإيميل موجود بالفعل  
 
---------------------------------------------------
+────────────────────
 
-GET CURRENT USER
-URL: /api/userinfo/
-METHOD: GET
-PERMISSION: Authenticated
+🔹 جلب بيانات المستخدم الحالي
+────────────────────
+URL: /api/userinfo/  
+METHOD: GET  
+PERMISSION: IsAuthenticated  
 
-RESPONSE:
+📝 الوصف:
+- يرجع بيانات المستخدم المسجل دخوله حاليًا
+
+────────────────────
+
+🔹 تعديل بيانات المستخدم
+────────────────────
+URL: /api/userinfo/update/  
+METHOD: PUT  
+PERMISSION: IsAuthenticated  
+
+BODY:
 {
-  "first_name": "John",
-  "last_name": "Doe",
-  "email": "john@example.com",
-  "username": "john@example.com"
+  "first_name": "Ahmed",
+  "last_name": "Ali",
+  "email": "ahmed@email.com",
+  "password": "newpassword"
 }
 
---------------------------------------------------
+📝 الوصف:
+- تحديث الاسم والإيميل
+- تحديث الباسورد فقط لو تم إدخاله
 
-UPDATE USER PROFILE
-URL: /api/userinfo/update/
-METHOD: PUT
-PERMISSION: Authenticated
+────────────────────
 
-REQUEST BODY:
+🔹 نسيان كلمة المرور
+────────────────────
+URL: /api/forgot_password/  
+METHOD: POST  
+
+BODY:
 {
-  "first_name": "John",
-  "last_name": "Doe",
-  "email": "john@example.com",
-  "password": "newpassword123"
+  "email": "ahmed@email.com"
 }
 
---------------------------------------------------
+📝 الوصف:
+- إنشاء توكن عشوائي
+- التوكن صالح لمدة 30 دقيقة
+- إرسال لينك إعادة التعيين على الإيميل
 
-FORGOT PASSWORD
-URL: /api/forgot_password/
-METHOD: POST
+────────────────────
 
-REQUEST BODY:
+🔹 إعادة تعيين كلمة المرور
+────────────────────
+URL: /api/reset_password/<token>  
+METHOD: POST  
+
+BODY:
 {
-  "email": "john@example.com"
+  "password": "newpassword",
+  "confirmPassword": "newpassword"
 }
 
---------------------------------------------------
+📝 الوصف:
+- التأكد من صلاحية التوكن
+- التأكد من تطابق الباسورد
+- تحديث كلمة المرور
 
-RESET PASSWORD
-URL: /api/reset_password/<token>
-METHOD: POST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📦 APIs الطلبات (ORDERS)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-REQUEST BODY:
-{
-  "password": "newpassword123",
-  "confirmPassword": "newpassword123"
-}
+🔹 إنشاء طلب جديد
+────────────────────
+URL: /api/order/new  
+METHOD: POST  
+PERMISSION: IsAuthenticated  
 
-==================================================
-
-ORDER APIS
-
-CREATE ORDER
-URL: /api/order/new
-METHOD: POST
-PERMISSION: Authenticated
-
-REQUEST BODY:
+BODY:
 {
   "order_Items": [
     { "product": 1, "quantity": 2, "price": 50 }
@@ -107,95 +127,129 @@ REQUEST BODY:
   "country": "Egypt"
 }
 
---------------------------------------------------
+📝 الوصف:
+- حساب السعر الإجمالي تلقائيًا
+- خصم الكمية من المخزون
+- إنشاء Order و OrderItems
 
-GET ALL ORDERS
-URL: /api/orders/
-METHOD: GET
-PERMISSION: Authenticated
+────────────────────
 
---------------------------------------------------
+🔹 جلب كل الطلبات
+────────────────────
+URL: /api/orders/  
+METHOD: GET  
+PERMISSION: IsAuthenticated  
 
-GET SINGLE ORDER
-URL: /api/order/<id>/
-METHOD: GET
-PERMISSION: Authenticated
+────────────────────
 
---------------------------------------------------
+🔹 جلب طلب واحد
+────────────────────
+URL: /api/order/<id>/  
+METHOD: GET  
 
-PROCESS ORDER
-URL: /api/order/<id>/process/
-METHOD: PUT
-PERMISSION: Admin
+────────────────────
 
---------------------------------------------------
+🔹 معالجة الطلب
+────────────────────
+URL: /api/order/<id>/process/  
+METHOD: PUT  
+PERMISSION: IsAdminUser  
 
-DELETE ORDER
-URL: /api/order/<id>/delete/
-METHOD: DELETE
-PERMISSION: Admin
+📝 الوصف:
+- تغيير حالة الطلب (pending / shipped / delivered)
 
-==================================================
+────────────────────
 
-PRODUCT APIS
+🔹 حذف طلب
+────────────────────
+URL: /api/order/<id>/delete/  
+METHOD: DELETE  
+PERMISSION: IsAdminUser  
 
-GET ALL PRODUCTS
-URL: /api/products/
-METHOD: GET
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🛍 APIs المنتجات (PRODUCTS)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
---------------------------------------------------
+🔹 جلب كل المنتجات
+────────────────────
+URL: /api/products/  
+METHOD: GET  
 
-GET PRODUCT BY ID
-URL: /api/products/<id>/
-METHOD: GET
+📝 الوصف:
+- دعم Pagination
+- دعم Filters
+- 12 منتج في الصفحة
 
---------------------------------------------------
+────────────────────
 
-CREATE PRODUCT
-URL: /api/products/new
-METHOD: POST
-PERMISSION: Admin / Owner
+🔹 جلب منتج بالـ ID
+────────────────────
+URL: /api/products/<id>/  
+METHOD: GET  
 
---------------------------------------------------
+────────────────────
 
-UPDATE PRODUCT
-URL: /api/products/update/<id>/
-METHOD: PUT
-PERMISSION: Admin / Owner
+🔹 إضافة منتج جديد
+────────────────────
+URL: /api/products/new  
+METHOD: POST  
+PERMISSION: IsAuthenticated  
 
---------------------------------------------------
+────────────────────
 
-DELETE PRODUCT
-URL: /api/products/delete/<id>/
-METHOD: DELETE
-PERMISSION: Admin / Owner
+🔹 تعديل منتج
+────────────────────
+URL: /api/products/update/<id>/  
+METHOD: PUT  
+PERMISSION: IsAdminUser + Owner  
 
---------------------------------------------------
+────────────────────
 
-CREATE REVIEW
-URL: /api/<product_id>/review/
-METHOD: POST
-PERMISSION: Authenticated
+🔹 حذف منتج
+────────────────────
+URL: /api/products/delete/<id>/  
+METHOD: DELETE  
+PERMISSION: IsAdminUser + Owner  
 
---------------------------------------------------
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⭐ APIs التقييمات (REVIEWS)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-DELETE REVIEW
-URL: /api/<product_id>/review/delete
-METHOD: DELETE
-PERMISSION: Admin
+🔹 إضافة / تعديل تقييم
+────────────────────
+URL: /api/<product_id>/review/  
+METHOD: POST  
+PERMISSION: IsAuthenticated  
 
-==================================================
+📝 الشروط:
+- التقييم من 1 إلى 5
+- تحديث التقييم لو موجود
+- حساب متوسط التقييم تلقائيًا
 
-PERMISSIONS
+────────────────────
 
-IsAuthenticated  
-IsAdminUser  
+🔹 حذف تقييم
+────────────────────
+URL: /api/<product_id>/review/delete  
+METHOD: DELETE  
+PERMISSION: IsAdminUser  
 
-==================================================
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔐 الصلاحيات
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-NOTES
+IsAuthenticated ➜ المستخدم لازم يكون مسجل دخول  
+IsAdminUser    ➜ الأدمن فقط  
 
-- passwords are hashed using make_password
-- password reset uses token with 30 minutes expiration
-- product rating calculated automatically from reviews
-- pagination set to 12 products per page
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📌 ملاحظات مهمة
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✔ تشفير كلمات المرور  
+✔ Reset Password بتوكن صالح 30 دقيقة  
+✔ تحديث Rating تلقائي  
+✔ Pagination = 12 عنصر  
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚀 المشروع جاهز للربط مع Front-End (React / Vue / Mobile)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
