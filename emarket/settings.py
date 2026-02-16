@@ -56,14 +56,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
-EMAIL_HOST_USER = '566b2505c93e28'
-EMAIL_HOST_PASSWORD = '93442b07325602'
-EMAIL_PORT = '2525'
-EMAIL_USE_TLS:False
-EMAIL_USE_SSL:False
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'ehabemadaboshady@gmail.com'
+EMAIL_HOST_PASSWORD = 'jfzsxviyubimljpo'
+EMAIL_USE_TLS =True
 
 ROOT_URLCONF = 'emarket.urls'
 TEMPLATES = [
