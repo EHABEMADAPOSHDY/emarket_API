@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+*.sqlite3
+.env
+/static/
+/media/
+.vscode/
+.DS_Store
+Thumbs.db
+*.egg-info/
